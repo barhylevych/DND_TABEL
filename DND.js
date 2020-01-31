@@ -4,14 +4,16 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import arrayMove from "array-move";
 
 const SortableItem = SortableElement(({ values, columns, index }) => {
-  const renderInfo = columns.map(({ id, Cell, ...props }, cellInd) => 
-  Cell ? <td key={`cell-${index}-${cellInd}`}> {Cell(values[id], props)} </td> :
-   <td key={`cell-${index}-${cellInd}`}>{values[id]}</td>)
-  return (
-    <tr>
-      {renderInfo}
-    </tr>
+  const renderInfo = columns.map(({ id, Cell, ...props }, cellInd) =>
+    Cell ? (
+      <td key={`cell-${index}-${cellInd}`} {...props}>
+        {Cell({ id, props, value: values[id]})}
+      </td>
+    ) : (
+      <td key={`cell-${index}-${cellInd}`}>{values[id]}</td>
+    )
   );
+  return <tr>{renderInfo}</tr>;
 });
 
 const SortableList = SortableContainer(({ columns, items }) => {
@@ -31,7 +33,6 @@ const SortableList = SortableContainer(({ columns, items }) => {
 
 const DNDTable = ({ data, onChange, columns }) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
-
     onChange(arrayMove(data, oldIndex, newIndex));
   };
 
@@ -52,14 +53,13 @@ const DNDTable = ({ data, onChange, columns }) => {
 const App = () => {
   const columns = [
     { id: "pdp1", name: "Item 1", minWidth: 100 },
-    { id: "pdp2", name: "Item 2", Cell: id => <button>{id}</button> },
-    { id: "pdp3", name: "Item 3" }
-  ];
-  const data = [
-    { pdp1: 20, pdp2: 30, pdp3: 40 },
-    { pdp1: 21, pdp2: 31, pdp3: 41 },
-    { pdp1: 22, pdp2: 32, pdp3: 42 },
-    { pdp1: 23, pdp2: 33, pdp3: 43 }
+    {
+      id: "pdp2",
+      name: "Item 2",
+      Cell: ({value}) => <button>{value}</button>,
+      minWidth: 100
+    },
+    { id: "pdp3", name: "Item 3", width: 100 }
   ];
   const [stateData, setStateData] = useState([
     { pdp1: 20, pdp2: 30, pdp3: 40 },
@@ -67,7 +67,7 @@ const App = () => {
     { pdp1: 22, pdp2: 32, pdp3: 42 },
     { pdp1: 23, pdp2: 33, pdp3: 43 }
   ]);
-  console.log(stateData)
+  console.log(stateData);
   return (
     <DNDTable columns={columns} data={stateData} onChange={setStateData} />
   );
