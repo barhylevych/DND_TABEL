@@ -6,11 +6,13 @@ import arrayMove from "array-move";
 const SortableItem = SortableElement(({ values, columns, index }) => {
   const renderInfo = columns.map(({ id, Cell, ...props }, cellInd) =>
     Cell ? (
-      <td key={`cell-${index}-${cellInd}`} {...props}>
-        {Cell({ id, props, value: values[id]})}
+      <td key={`cell-${index}-${cellInd}`} style={props}>
+        {Cell({ id, props, value: values[id] })}
       </td>
     ) : (
-      <td key={`cell-${index}-${cellInd}`}>{values[id]}</td>
+      <td key={`cell-${index}-${cellInd}`} style={props}>
+        {values[id]}
+      </td>
     )
   );
   return <tr>{renderInfo}</tr>;
@@ -56,10 +58,10 @@ const App = () => {
     {
       id: "pdp2",
       name: "Item 2",
-      Cell: ({value}) => <button>{value}</button>,
-      minWidth: 100
+      Cell: ({ value }) => <button>{value}</button>,
+      minWidth: 1000
     },
-    { id: "pdp3", name: "Item 3", width: 100 }
+    { id: "pdp3", name: "Item 3", minWidth: 1000 }
   ];
   const [stateData, setStateData] = useState([
     { pdp1: 20, pdp2: 30, pdp3: 40 },
